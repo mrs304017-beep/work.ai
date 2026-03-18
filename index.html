@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WorkAI — Your Business Assistant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0a0f1e;
+    --navy2: #111827;
+    --blue: #185FA5;
+    --blue-light: #378ADD;
+    --blue-pale: #E6F1FB;
+    --green: #3B6D11;
+    --green-pale: #EAF3DE;
+    --border: rgba(255,255,255,0.08);
+    --border-light: rgba(0,0,0,0.08);
+    --text-muted: rgba(255,255,255,0.45);
+    --card-bg: rgba(255,255,255,0.04);
+    --radius: 12px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy);
+    color: #fff;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 48px;
+    height: 64px;
+    background: rgba(10,15,30,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .nav-brand {
+    display: flex; align-items: center; gap: 10px;
+    text-decoration: none;
+  }
+
+  .nav-logo {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: var(--blue);
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .nav-logo svg { display: block; }
+
+  .nav-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px; font-weight: 700;
+    color: #fff; letter-spacing: -0.3px;
+  }
+
+  .nav-links {
+    display: flex; align-items: center; gap: 32px;
+  }
+
+  .nav-links a {
+    font-size: 14px; color: var(--text-muted);
+    text-decoration: none; transition: color 0.2s;
+  }
+  .nav-links a:hover { color: #fff; }
+
+  .nav-cta {
+    background: var(--blue); color: #fff !important;
+    padding: 8px 20px; border-radius: 8px;
+    font-weight: 500; font-size: 13px !important;
+    transition: opacity 0.2s !important;
+  }
+  .nav-cta:hover { opacity: 0.85; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    padding: 100px 24px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(24,95,165,0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(24,95,165,0.07) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 30%, transparent 100%);
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(24,95,165,0.18) 0%, transparent 70%);
+    top: 10%; left: 50%; transform: translateX(-50%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(24,95,165,0.15);
+    border: 0.5px solid rgba(24,95,165,0.4);
+    border-radius: 99px;
+    padding: 6px 14px;
+    font-size: 12px; font-weight: 500;
+    color: #378ADD; margin-bottom: 28px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .badge-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #378ADD;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(44px, 7vw, 80px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    margin-bottom: 24px;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .hero h1 span {
+    background: linear-gradient(135deg, #378ADD 0%, #5DCAA5 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero p {
+    font-size: 18px; line-height: 1.7;
+    color: rgba(255,255,255,0.6);
+    max-width: 520px;
+    margin: 0 auto 40px;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .hero-btns {
+    display: flex; gap: 12px; flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  .btn-primary {
+    background: var(--blue); color: #fff;
+    padding: 14px 28px; border-radius: 10px;
+    font-size: 15px; font-weight: 500;
+    text-decoration: none; transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-primary:hover { background: var(--blue-light); transform: translateY(-1px); }
+
+  .btn-secondary {
+    background: rgba(255,255,255,0.06);
+    border: 0.5px solid rgba(255,255,255,0.15);
+    color: #fff;
+    padding: 14px 28px; border-radius: 10px;
+    font-size: 15px; font-weight: 500;
+    text-decoration: none; transition: all 0.2s;
+  }
+  .btn-secondary:hover { background: rgba(255,255,255,0.1); }
+
+  .hero-stats {
+    display: flex; gap: 40px; justify-content: center;
+    margin-top: 60px;
+    animation: fadeUp 0.6s 0.4s ease both;
+  }
+
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px; font-weight: 700; color: #fff;
+    display: block;
+  }
+  .stat-label { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+
+  /* ── SECTION COMMON ── */
+  section { padding: 100px 24px; }
+
+  .container { max-width: 1100px; margin: 0 auto; }
+
+  .section-tag {
+    font-size: 11px; font-weight: 500; letter-spacing: 0.1em;
+    text-transform: uppercase; color: #378ADD;
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 700; letter-spacing: -1px;
+    color: #fff; margin-bottom: 16px;
+    line-height: 1.1;
+  }
+
+  .section-sub {
+    font-size: 16px; color: rgba(255,255,255,0.5);
+    max-width: 480px; line-height: 1.7;
+  }
+
+  /* ── FEATURES ── */
+  #features { background: var(--navy2); }
+
+  .features-header { margin-bottom: 56px; }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .feature-card {
+    background: var(--navy2);
+    padding: 32px;
+    transition: background 0.2s;
+  }
+  .feature-card:hover { background: rgba(24,95,165,0.06); }
+
+  .feature-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 20px;
+  }
+
+  .feature-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 17px; font-weight: 600; color: #fff;
+    margin-bottom: 10px;
+  }
+
+  .feature-desc {
+    font-size: 14px; line-height: 1.7;
+    color: rgba(255,255,255,0.45);
+  }
+
+  /* ── APP SECTION ── */
+  #app { background: var(--navy); }
+
+  .app-header { text-align: center; margin-bottom: 48px; }
+  .app-header .section-sub { margin: 0 auto; }
+
+  /* APP UI */
+  .app-wrapper {
+    background: rgba(255,255,255,0.03);
+    border: 0.5px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .app-topbar {
+    background: rgba(255,255,255,0.04);
+    border-bottom: 0.5px solid var(--border);
+    padding: 12px 20px;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .tb-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  .app-body {
+    display: flex;
+    height: 540px;
+  }
+
+  .app-sidebar {
+    width: 190px;
+    border-right: 0.5px solid var(--border);
+    background: rgba(255,255,255,0.02);
+    display: flex; flex-direction: column;
+    flex-shrink: 0;
+  }
+
+  .sb-header {
+    padding: 16px;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .sb-brand {
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .sb-logo {
+    width: 24px; height: 24px; border-radius: 6px;
+    background: var(--blue);
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .sb-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px; font-weight: 700; color: #fff;
+  }
+
+  .sb-section-label {
+    font-size: 9px; font-weight: 500; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--text-muted);
+    padding: 14px 16px 6px;
+  }
+
+  .sb-btn {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 16px; cursor: pointer;
+    border: none; background: none;
+    width: 100%; text-align: left;
+    color: rgba(255,255,255,0.45);
+    font-size: 13px; font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s;
+  }
+  .sb-btn:hover { background: rgba(255,255,255,0.04); color: #fff; }
+  .sb-btn.active { background: rgba(24,95,165,0.15); color: #378ADD; font-weight: 500; }
+
+  .sb-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.2); flex-shrink: 0; }
+  .sb-btn.active .sb-dot { background: #378ADD; }
+
+  .sb-footer {
+    margin-top: auto;
+    padding: 12px 16px;
+    border-top: 0.5px solid var(--border);
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .sb-avatar {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: rgba(24,95,165,0.4);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 500; color: #378ADD;
+    flex-shrink: 0;
+  }
+
+  .sb-user-name { font-size: 12px; color: rgba(255,255,255,0.6); }
+
+  /* Chat */
+  .chat-panel {
+    flex: 1; display: flex; flex-direction: column; min-width: 0;
+  }
+
+  .chat-topbar {
+    padding: 12px 18px;
+    border-bottom: 0.5px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0;
+  }
+
+  .ct-title { font-size: 13px; font-weight: 500; color: #fff; }
+  .ct-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+
+  .online-pill {
+    font-size: 11px; padding: 3px 8px; border-radius: 99px;
+    background: rgba(59,109,17,0.2); color: #97C459;
+    font-weight: 500;
+  }
+
+  .messages-area {
+    flex: 1; overflow-y: auto; padding: 16px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+
+  .messages-area::-webkit-scrollbar { width: 4px; }
+  .messages-area::-webkit-scrollbar-track { background: transparent; }
+  .messages-area::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+  .msg { display: flex; gap: 8px; max-width: 85%; }
+  .msg.user { align-self: flex-end; flex-direction: row-reverse; }
+
+  .msg-av {
+    width: 24px; height: 24px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; font-weight: 600; flex-shrink: 0; margin-top: 2px;
+  }
+  .msg.ai .msg-av { background: rgba(24,95,165,0.3); color: #378ADD; }
+  .msg.user .msg-av { background: rgba(59,109,17,0.3); color: #97C459; }
+
+  .msg-bbl {
+    padding: 9px 13px; border-radius: 10px;
+    font-size: 13px; line-height: 1.55;
+  }
+  .msg.ai .msg-bbl {
+    background: rgba(255,255,255,0.06);
+    border: 0.5px solid rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.85);
+  }
+  .msg.user .msg-bbl {
+    background: var(--blue); color: #fff;
+  }
+
+  .typing { display: flex; gap: 3px; padding: 3px 0; }
+  .tdot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    animation: tdot 1s infinite;
+  }
+  .tdot:nth-child(2) { animation-delay: 0.15s; }
+  .tdot:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes tdot {
+    0%, 80%, 100% { transform: translateY(0); opacity: 0.3; }
+    40% { transform: translateY(-4px); opacity: 1; }
+  }
+
+  .quick-row {
+    padding: 0 16px 8px;
+    display: flex; gap: 6px; flex-wrap: wrap; flex-shrink: 0;
+  }
+
+  .qp {
+    font-size: 11px; padding: 5px 10px;
+    border: 0.5px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.04);
+    border-radius: 99px; cursor: pointer;
+    color: rgba(255,255,255,0.5); font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s; white-space: nowrap;
+  }
+  .qp:hover { background: rgba(255,255,255,0.1); color: #fff; }
+
+  .input-row {
+    padding: 10px 16px 14px;
+    border-top: 0.5px solid var(--border);
+    display: flex; gap: 8px; align-items: flex-end; flex-shrink: 0;
+  }
+
+  .chat-input {
+    flex: 1; resize: none;
+    background: rgba(255,255,255,0.06);
+    border: 0.5px solid rgba(255,255,255,0.12);
+    border-radius: 10px;
+    padding: 9px 13px;
+    color: #fff; font-size: 13px; font-family: 'DM Sans', sans-serif;
+    line-height: 1.4; min-height: 38px; max-height: 90px;
+    outline: none; transition: border-color 0.2s;
+  }
+  .chat-input::placeholder { color: rgba(255,255,255,0.25); }
+  .chat-input:focus { border-color: rgba(24,95,165,0.6); }
+
+  .send-btn {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: var(--blue); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: opacity 0.15s;
+  }
+  .send-btn:hover { opacity: 0.85; }
+  .send-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  /* ── HOW IT WORKS ── */
+  #how { background: var(--navy2); }
+
+  .how-header { text-align: center; margin-bottom: 60px; }
+  .how-header .section-sub { margin: 0 auto; }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 32px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .step {
+    text-align: center;
+  }
+
+  .step-num {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: rgba(24,95,165,0.15);
+    border: 0.5px solid rgba(24,95,165,0.3);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 20px;
+    font-family: 'Syne', sans-serif;
+    font-size: 18px; font-weight: 700; color: #378ADD;
+  }
+
+  .step h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px; font-weight: 600; color: #fff;
+    margin-bottom: 10px;
+  }
+
+  .step p { font-size: 14px; color: var(--text-muted); line-height: 1.7; }
+
+  /* ── PRICING ── */
+  #pricing { background: var(--navy); }
+
+  .pricing-header { text-align: center; margin-bottom: 52px; }
+  .pricing-header .section-sub { margin: 0 auto; }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px; max-width: 860px; margin: 0 auto;
+  }
+
+  .price-card {
+    background: rgba(255,255,255,0.03);
+    border: 0.5px solid rgba(255,255,255,0.08);
+    border-radius: 14px; padding: 32px;
+    position: relative; transition: border-color 0.2s;
+  }
+  .price-card:hover { border-color: rgba(255,255,255,0.15); }
+  .price-card.featured {
+    border-color: rgba(24,95,165,0.5);
+    background: rgba(24,95,165,0.07);
+  }
+
+  .price-badge {
+    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+    background: var(--blue); color: #fff;
+    font-size: 11px; font-weight: 500; padding: 4px 14px;
+    border-radius: 99px; white-space: nowrap;
+  }
+
+  .price-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 8px;
+  }
+
+  .price-amount {
+    display: flex; align-items: baseline; gap: 4px; margin-bottom: 20px;
+  }
+  .price-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 40px; font-weight: 800; color: #fff;
+  }
+  .price-per { font-size: 14px; color: var(--text-muted); }
+
+  .price-features {
+    list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px;
+  }
+
+  .price-features li {
+    font-size: 13px; color: rgba(255,255,255,0.6);
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .check {
+    width: 16px; height: 16px; border-radius: 50%;
+    background: rgba(59,109,17,0.2); color: #97C459;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9px; flex-shrink: 0;
+  }
+
+  .price-btn {
+    display: block; text-align: center;
+    padding: 12px; border-radius: 9px;
+    font-size: 14px; font-weight: 500;
+    text-decoration: none; transition: all 0.2s; cursor: pointer;
+    border: none; width: 100%; font-family: 'DM Sans', sans-serif;
+  }
+
+  .price-btn.outline {
+    background: rgba(255,255,255,0.05);
+    border: 0.5px solid rgba(255,255,255,0.12);
+    color: #fff;
+  }
+  .price-btn.outline:hover { background: rgba(255,255,255,0.1); }
+
+  .price-btn.solid {
+    background: var(--blue); color: #fff;
+  }
+  .price-btn.solid:hover { background: var(--blue-light); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--navy2);
+    border-top: 0.5px solid var(--border);
+    padding: 48px 24px;
+    text-align: center;
+  }
+
+  .footer-brand {
+    display: flex; align-items: center; gap: 10px;
+    justify-content: center; margin-bottom: 20px;
+  }
+
+  .footer-logo {
+    width: 30px; height: 30px; border-radius: 7px;
+    background: var(--blue);
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .footer-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 17px; font-weight: 700; color: #fff;
+  }
+
+  .footer-links {
+    display: flex; gap: 28px; justify-content: center; margin-bottom: 28px;
+  }
+
+  .footer-links a {
+    font-size: 13px; color: var(--text-muted);
+    text-decoration: none; transition: color 0.2s;
+  }
+  .footer-links a:hover { color: #fff; }
+
+  .footer-copy {
+    font-size: 12px; color: rgba(255,255,255,0.2);
+  }
+
+  /* ── MOBILE ── */
+  @media (max-width: 680px) {
+    nav { padding: 0 20px; }
+    .nav-links { display: none; }
+    section { padding: 72px 20px; }
+    .app-sidebar { display: none; }
+    .hero-stats { gap: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="#">
+    <div class="nav-logo">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <circle cx="8" cy="8" r="6" stroke="#fff" stroke-width="1.5"/>
+        <path d="M8 5v3l2.5 1.5" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <span class="nav-name">WorkAI</span>
+  </a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#app">Try it</a>
+    <a href="#how">How it works</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#app" class="nav-cta">Get started</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+
+  <div class="hero-badge">
+    <span class="badge-dot"></span>
+    Powered by Claude AI
+  </div>
+
+  <h1>Your AI assistant<br>built for <span>business</span></h1>
+  <p>Draft emails, write reports, structure meeting notes, and think through strategy — all in one intelligent workspace.</p>
+
+  <div class="hero-btns">
+    <a href="#app" class="btn-primary">
+      Try WorkAI free
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <path d="M2 7h10M7 2l5 5-5 5" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+    <a href="#features" class="btn-secondary">See features</a>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat">
+      <span class="stat-num">5</span>
+      <span class="stat-label">AI modes</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">10x</span>
+      <span class="stat-label">Faster drafting</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">24/7</span>
+      <span class="stat-label">Always available</span>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="container">
+    <div class="features-header">
+      <div class="section-tag">Features</div>
+      <div class="section-title">Everything your team needs</div>
+      <div class="section-sub">Five specialized AI modes, each fine-tuned for a specific business task.</div>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(24,95,165,0.15);">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <rect x="3" y="3" width="14" height="14" rx="3" stroke="#378ADD" stroke-width="1.5"/>
+            <path d="M6 10h8M6 7h5M6 13h6" stroke="#378ADD" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="feature-title">Email Drafts</div>
+        <div class="feature-desc">Generate polished professional emails in seconds. Client outreach, follow-ups, negotiations — just describe it.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(59,109,17,0.15);">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M4 16V8l6-4 6 4v8" stroke="#97C459" stroke-width="1.5" stroke-linejoin="round"/>
+            <rect x="7" y="11" width="6" height="5" rx="1" stroke="#97C459" stroke-width="1.3"/>
+          </svg>
+        </div>
+        <div class="feature-title">Reports</div>
+        <div class="feature-desc">Turn raw data and notes into structured, executive-ready reports with clear sections and insights.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(93,202,165,0.12);">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <circle cx="10" cy="10" r="7" stroke="#5DCAA5" stroke-width="1.5"/>
+            <path d="M7 10l2 2 4-4" stroke="#5DCAA5" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="feature-title">Meeting Notes</div>
+        <div class="feature-desc">Paste rough notes and get a clean summary with decisions, action items, and next steps.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(186,117,23,0.12);">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M10 4v12M4 10h12" stroke="#EF9F27" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="10" cy="10" r="7" stroke="#EF9F27" stroke-width="1.3"/>
+          </svg>
+        </div>
+        <div class="feature-title">Strategy</div>
+        <div class="feature-desc">Think through decisions, run SWOT analyses, evaluate options, and plan product launches with an AI advisor.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(208,82,125,0.12);">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M3 16l4-4 3 3 7-9" stroke="#ED93B1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="feature-title">General Assistant</div>
+        <div class="feature-desc">Ask anything. Planning, research, brainstorming, problem-solving — your always-on business partner.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon" style="background:rgba(255,255,255,0.06);">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <rect x="3" y="5" width="14" height="10" rx="2" stroke="rgba(255,255,255,0.5)" stroke-width="1.5"/>
+            <path d="M7 9h6M7 12h4" stroke="rgba(255,255,255,0.5)" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="feature-title">Memory within sessions</div>
+        <div class="feature-desc">WorkAI remembers your full conversation context, so responses get smarter as you keep chatting.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- APP -->
+<section id="app">
+  <div class="container">
+    <div class="app-header">
+      <div class="section-tag">Live app</div>
+      <div class="section-title">Try it right now</div>
+      <div class="section-sub">Fully functional — powered by real AI. Pick a mode and start chatting.</div>
+    </div>
+
+    <div class="app-wrapper">
+      <div class="app-topbar">
+        <div class="tb-dot" style="background:#ff5f57;"></div>
+        <div class="tb-dot" style="background:#febc2e;"></div>
+        <div class="tb-dot" style="background:#28c840;"></div>
+        <span style="font-size:12px;color:rgba(255,255,255,0.3);margin-left:10px;">workai.app</span>
+      </div>
+      <div class="app-body">
+        <!-- Sidebar -->
+        <div class="app-sidebar">
+          <div class="sb-header">
+            <div class="sb-brand">
+              <div class="sb-logo">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <circle cx="7" cy="7" r="5" stroke="#fff" stroke-width="1.5"/>
+                  <path d="M7 4v3l2 1.5" stroke="#fff" stroke-width="1.2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <span class="sb-name">WorkAI</span>
+            </div>
+          </div>
+          <div class="sb-section-label">Assistants</div>
+          <button class="sb-btn active" onclick="switchMode('general')" id="btn-general"><span class="sb-dot"></span>General</button>
+          <button class="sb-btn" onclick="switchMode('email')" id="btn-email"><span class="sb-dot"></span>Email drafts</button>
+          <button class="sb-btn" onclick="switchMode('report')" id="btn-report"><span class="sb-dot"></span>Reports</button>
+          <button class="sb-btn" onclick="switchMode('meeting')" id="btn-meeting"><span class="sb-dot"></span>Meeting notes</button>
+          <button class="sb-btn" onclick="switchMode('strategy')" id="btn-strategy"><span class="sb-dot"></span>Strategy</button>
+          <div class="sb-footer">
+            <div class="sb-avatar">YO</div>
+            <span class="sb-user-name">Your workspace</span>
+          </div>
+        </div>
+
+        <!-- Chat -->
+        <div class="chat-panel">
+          <div class="chat-topbar">
+            <div>
+              <div class="ct-title" id="ct-title">General Assistant</div>
+              <div class="ct-sub" id="ct-sub">Ask anything about your business</div>
+            </div>
+            <span class="online-pill">Online</span>
+          </div>
+
+          <div class="messages-area" id="messages"></div>
+
+          <div class="quick-row" id="quick-row"></div>
+
+          <div class="input-row">
+            <textarea class="chat-input" id="chat-input" placeholder="Ask your assistant..." rows="1"
+              onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+            <button class="send-btn" id="send-btn" onclick="sendMessage()">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M2 7h10M7 2l5 5-5 5" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="container">
+    <div class="how-header">
+      <div class="section-tag">How it works</div>
+      <div class="section-title">Three steps to results</div>
+      <div class="section-sub">No setup. No training. Just open, pick a mode, and get to work.</div>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Choose your mode</h3>
+        <p>Pick the assistant that matches your task — email, report, meeting notes, strategy, or general.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Describe what you need</h3>
+        <p>Type your request in plain language. No prompting skills needed — just talk naturally.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Get your output</h3>
+        <p>Receive a polished, ready-to-use result in seconds. Copy, refine, or ask a follow-up.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="container">
+    <div class="pricing-header">
+      <div class="section-tag">Pricing</div>
+      <div class="section-title">Simple, honest pricing</div>
+      <div class="section-sub">Start free. Upgrade when you need more.</div>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-name">Free</div>
+        <div class="price-amount">
+          <span class="price-num">$0</span>
+          <span class="price-per">/month</span>
+        </div>
+        <ul class="price-features">
+          <li><span class="check">✓</span>20 messages per day</li>
+          <li><span class="check">✓</span>All 5 AI modes</li>
+          <li><span class="check">✓</span>Session memory</li>
+          <li><span class="check">✓</span>No credit card needed</li>
+        </ul>
+        <button class="price-btn outline" onclick="document.getElementById('chat-input').focus(); document.getElementById('app').scrollIntoView({behavior:'smooth'})">Get started free</button>
+      </div>
+
+      <div class="price-card featured">
+        <div class="price-badge">Most popular</div>
+        <div class="price-name">Pro</div>
+        <div class="price-amount">
+          <span class="price-num">$12</span>
+          <span class="price-per">/month</span>
+        </div>
+        <ul class="price-features">
+          <li><span class="check">✓</span>Unlimited messages</li>
+          <li><span class="check">✓</span>All 5 AI modes</li>
+          <li><span class="check">✓</span>Conversation history saved</li>
+          <li><span class="check">✓</span>Priority response speed</li>
+          <li><span class="check">✓</span>Export to PDF / Word</li>
+        </ul>
+        <button class="price-btn solid">Start Pro — $12/mo</button>
+      </div>
+
+      <div class="price-card">
+        <div class="price-name">Team</div>
+        <div class="price-amount">
+          <span class="price-num">$39</span>
+          <span class="price-per">/month</span>
+        </div>
+        <ul class="price-features">
+          <li><span class="check">✓</span>Up to 10 team members</li>
+          <li><span class="check">✓</span>Shared workspace</li>
+          <li><span class="check">✓</span>Admin dashboard</li>
+          <li><span class="check">✓</span>Custom AI instructions</li>
+          <li><span class="check">✓</span>Priority support</li>
+        </ul>
+        <button class="price-btn outline">Contact us</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">
+    <div class="footer-logo">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <circle cx="7" cy="7" r="5" stroke="#fff" stroke-width="1.5"/>
+        <path d="M7 4v3l2 1.5" stroke="#fff" stroke-width="1.2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <span class="footer-name">WorkAI</span>
+  </div>
+  <div class="footer-links">
+    <a href="#features">Features</a>
+    <a href="#how">How it works</a>
+    <a href="#pricing">Pricing</a>
+    <a href="mailto:hello@workai.app">Contact</a>
+  </div>
+  <div class="footer-copy">© 2026 WorkAI. Built with Claude AI by Anthropic.</div>
+</footer>
+
+<script>
+const modes = {
+  general: {
+    title: 'General Assistant', sub: 'Ask anything about your business',
+    system: 'You are a concise, professional AI business assistant. Help with productivity, planning, analysis, and business decisions. Keep responses clear and actionable. Use bullet points when listing things.',
+    welcome: 'Hello! I\'m your AI business assistant. I can help with strategy, planning, analysis, and everyday business tasks. What would you like to work on?',
+    prompts: ['Summarize key business metrics', 'Create a project timeline', 'Analyze a problem']
+  },
+  email: {
+    title: 'Email Drafts', sub: 'Write professional emails instantly',
+    system: 'You are an expert at writing concise, professional business emails. When asked, draft a complete email with subject line, greeting, body, and sign-off. Keep emails clear and to the point.',
+    welcome: 'I\'ll help you write polished professional emails. Describe the email you need — who it\'s to, the purpose, and the tone you want.',
+    prompts: ['Follow-up after a meeting', 'Request a deadline extension', 'Cold outreach to a client']
+  },
+  report: {
+    title: 'Reports', sub: 'Structure data into clear reports',
+    system: 'You are a business analyst expert at writing clear, structured reports. Format reports with sections, bullet points, and concise language. Focus on actionable insights.',
+    welcome: 'Let me help you create a clear, professional report. What kind of report do you need? Share the key information and I\'ll structure it for you.',
+    prompts: ['Write a project status update', 'Create a sales performance summary', 'Build an executive summary']
+  },
+  meeting: {
+    title: 'Meeting Notes', sub: 'Capture and structure meeting summaries',
+    system: 'You are an expert at structuring meeting notes. When given raw notes or a description, format them clearly with: Attendees, Agenda, Key Decisions, Action Items, and Next Steps.',
+    welcome: 'Paste your raw meeting notes or describe what was discussed, and I\'ll turn them into a clean, structured summary with action items.',
+    prompts: ['Format my rough notes', 'Create a meeting agenda', 'Write a meeting recap email']
+  },
+  strategy: {
+    title: 'Strategy', sub: 'Think through business decisions',
+    system: 'You are a strategic business advisor. Help analyze decisions, identify opportunities and risks, and provide frameworks for thinking through complex business challenges. Be structured and thorough.',
+    welcome: 'I can help you think through business strategy, decisions, and challenges. What strategic question or problem are you working on?',
+    prompts: ['Run a SWOT analysis', 'Evaluate a business decision', 'Plan a product launch']
+  }
+};
+
+let currentMode = 'general';
+let history = [];
+let isLoading = false;
+
+function switchMode(mode) {
+  currentMode = mode;
+  history = [];
+  document.querySelectorAll('.sb-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-' + mode).classList.add('active');
+  document.getElementById('ct-title').textContent = modes[mode].title;
+  document.getElementById('ct-sub').textContent = modes[mode].sub;
+  document.getElementById('messages').innerHTML = '';
+  addMsg('ai', modes[mode].welcome);
+  renderPrompts(mode);
+}
+
+function renderPrompts(mode) {
+  const c = document.getElementById('quick-row');
+  c.innerHTML = modes[mode].prompts.map(p =>
+    `<button class="qp" onclick="usePrompt('${p.replace(/'/g, "\\'")}')">${p}</button>`
+  ).join('');
+}
+
+function usePrompt(t) {
+  document.getElementById('chat-input').value = t;
+  sendMessage();
+}
+
+function addMsg(role, text) {
+  const c = document.getElementById('messages');
+  const d = document.createElement('div');
+  d.className = 'msg ' + role;
+  d.innerHTML = `<div class="msg-av">${role === 'ai' ? 'AI' : 'YO'}</div><div class="msg-bbl">${text.replace(/\n/g, '<br>')}</div>`;
+  c.appendChild(d);
+  c.scrollTop = c.scrollHeight;
+}
+
+function addTyping() {
+  const c = document.getElementById('messages');
+  const d = document.createElement('div');
+  d.className = 'msg ai'; d.id = 'typing';
+  d.innerHTML = `<div class="msg-av">AI</div><div class="msg-bbl"><div class="typing"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div></div>`;
+  c.appendChild(d); c.scrollTop = c.scrollHeight;
+}
+
+function removeTyping() {
+  const el = document.getElementById('typing');
+  if (el) el.remove();
+}
+
+async function sendMessage() {
+  if (isLoading) return;
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = ''; autoResize(input);
+  addMsg('user', text);
+  history.push({ role: 'user', content: text });
+  isLoading = true;
+  document.getElementById('send-btn').disabled = true;
+  addTyping();
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: modes[currentMode].system,
+        messages: history
+      })
+    });
+    const data = await res.json();
+    const reply = data.content?.[0]?.text || 'Sorry, something went wrong. Please try again.';
+    removeTyping();
+    addMsg('ai', reply);
+    history.push({ role: 'assistant', content: reply });
+  } catch (e) {
+    removeTyping();
+    addMsg('ai', 'Connection error. Please try again.');
+  }
+  isLoading = false;
+  document.getElementById('send-btn').disabled = false;
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 90) + 'px';
+}
+
+switchMode('general');
+</script>
+</body>
+</html>
